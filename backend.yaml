@@ -24,8 +24,8 @@
     ansible.builtin.file:
       path: /app
       state: directory
-
-  - name: download backend covered
+  
+  - name: download backend code
     ansible.builtin.get_url:
       url: https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip
       dest: /tmp/backend.zip
@@ -35,7 +35,7 @@
       src: /tmp/backend.zip
       dest: /app
       remote_src: yes
-
+  
   - name: Install dependencies
     community.general.npm:
       path: /app
@@ -49,16 +49,16 @@
     ansible.builtin.pip:
       name: "{{ item }}"
       executable: pip3.9
-      loop:
-      - cryptography
-      - PyMySQL  
+    loop:
+    - cryptography
+    - PyMySQL
 
   - name: import mysql data
     community.mysql.mysql_db:
       state: import
-      name: all 
+      name: all
       login_user: root
       login_password: ExpenseApp@1
       login_host: mysql.enjam.online
-      target: /app/schema/backend.sql  
+      target: /app/schema/backend.sql
 
