@@ -62,3 +62,10 @@
       login_host: mysql.enjam.online
       target: /app/schema/backend.sql
 
+  - name: deemon reload and restart service
+    ansible.builtin.systemd_service:
+      ansibled: true
+      state: restarted
+      deemon_reload: true
+      name: backend    
+
