@@ -10,8 +10,11 @@
 
   - name: install nodejs
     ansible.builtin.package:
-      name: nodejs
+      name: "{{ item }}"
       state: present
+    loop:
+    - nodejs
+    - mysql
 
   - name: create expense user
     ansible.builtin.user:
@@ -35,4 +38,27 @@
 
   - name: Install dependencies
     community.general.npm:
-      path: /app    
+      path: /app
+
+  - name: copy backend service
+    ansible.builtin.copy:
+      src: backend.service
+      dest: /etc/systemd/system/backend.service
+
+  - name: install python libs
+    ansible.builtin.pip:
+      name: "{{ item }}"
+      executable: pip3.9
+      loop:
+      - cryptography
+      - PyMySQL  
+
+  - name: import mysql data
+    community.mysql.mysql_db:
+      syate: import
+      name: all 
+      login_user: root
+      login_password: ExpenseApp@1
+      login_host: mysql.enjam.online
+      target: /app/schema/backend.sql  
+
